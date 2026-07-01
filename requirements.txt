@@ -1,0 +1,8 @@
+torch>=2.0
+transformer_lens==2.16.1
+numpy>=1.26,<2.3
+pandas
+scikit-learn
+matplotlib
+tqdm
+notebook
