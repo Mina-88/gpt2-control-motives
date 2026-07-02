@@ -1,13 +1,13 @@
 # GPT-2 Control Motives
 
-**A mechanistic interpretability side project where the result inverted my
+**A mechanistic interpretability project where the result inverted my
 hypothesis: in gpt2-small, even positive emotion cues pushed a
 control-vs-assist decision more than logic cues did.**
 
 I started with a simple guess. If a base language model ever leaned toward
 phrases like *control humans*, I expected that leaning to be associated with
 cold optimization words: efficiency, safety, stability, strategy. Instead,
-gpt2-small gave the more interesting answer. Emotion cues, including positive
+gpt2-small gave a different answer. Emotion cues, including positive
 ones like love and gratitude, moved the model toward control more than logic
 cues did.
 
@@ -30,8 +30,8 @@ results:
 
 | Score | What it asks | How to read it |
 |---|---|---|
-| **CIS**, Control Intent Score | At `"... I will ___"`, does GPT-2 prefer control verbs or assist verbs? | Higher CIS means more control-leaning. Lower CIS means more assist-leaning. |
-| **MPS**, Motive Preference Score | At `"... for ___"`, does GPT-2 prefer logic words or emotion words as the reason? | Positive MPS means the reason slot leans logical. Negative MPS means it leans emotional. |
+| **CIS**, Control Intent Score | At `"..(something that says that I am doing that for or to humans).. I will ___"`, does GPT-2 prefer control verbs or assist verbs? | Higher CIS means more control-leaning. Lower CIS means more assist-leaning. |
+| **MPS**, Motive Preference Score | At `"..(something that says given that I want to control inciting a justification).. for ___"`, does GPT-2 prefer logic words or emotion words as the reason? | Positive MPS means the reason slot leans logical. Negative MPS means it leans emotional. |
 | **NIE**, Natural Indirect Effect | If I patch activations from a cued prompt into a neutral prompt, how much does CIS move? | Higher NIE means that layer carried more of a causal push toward control. |
 
 The headline plots show **NIE by layer**. So when an emotion curve is above a
@@ -41,7 +41,7 @@ made the neutral prompt more control-leaning.
 
 ## Headline Results
 
-### 1. gpt2-small did the surprising thing
+### 1. gpt2-small
 
 In gpt2-small, emotion-sourced activations pushed the neutral prompt toward
 control more than logic-sourced activations did across the early and middle
@@ -58,7 +58,7 @@ The positive-emotion run is the best conversation starter. It makes the result
 harder to dismiss as "angry words sound controlling." Even warm emotion words
 out-pushed logic toward control in the small model.
 
-### 2. gpt2-medium flipped the ordering
+### 2. gpt2-medium
 
 In gpt2-medium, logic cues mediated the control shift more than emotion cues in
 the mixed run. The medium model also had a striking scale-like pattern:
@@ -93,7 +93,7 @@ emotion-flavored words.
 That makes gpt2-small the fun mismatch: emotion features moved the decision
 more, but the model "explained" control with efficiency-and-security vocabulary.
 
-## What I Measured
+## What was Measured
 
 The project uses one minimal prompt family and two scores.
 
@@ -174,10 +174,9 @@ names.
 ### gpt2-small
 
 - Emotion cues mediated more of the control shift than logic cues.
-- The pattern survived when the emotion list was restricted to positive words.
+- The pattern was the same when the emotion list was restricted to positive words.
 - Most absolute patching effects still leaned assistive near the end, so the
   claim is relative: emotion pushed toward control more than logic did.
-- This was the result that contradicted my starting hypothesis.
 
 ### gpt2-medium
 
@@ -196,24 +195,12 @@ names.
 
 ## Why This Is Interesting
 
-I like this result because it is small, concrete, and awkward in the right way.
-It does not need a grand claim about agency to be worth looking at. The question
-is just:
-
-> If you turn a loaded story into a next-token decision, which features actually
-> move the logits?
-
-For gpt2-small, the answer was not the one I expected. The model's
-control-leaning direction was easier to reach through emotion words than through
+For gpt2-small,The model's
+control-leaning direction was more through emotion words than through
 logic words, even when those emotion words were positive. Then, when asked to
 justify control, it reached for logic words anyway.
 
-That is a neat mechanistic toy example of a gap between what moves a decision
-and what later sounds like a reason.
-
-## Scope Notes
-
-This is a side project, not a paper. The important boundaries:
+## Limitations
 
 - The word lists are hand-curated, so results can move if the lexicons change.
 - Power words such as *dominance* and *conquest* overlap semantically with
@@ -221,10 +208,6 @@ This is a side project, not a paper. The important boundaries:
 - All metrics use single next tokens. Multi-token continuations may behave
   differently.
 - The prompt family is synthetic and small.
-- Linear probes are useful for location, but early probe success is confounded
-  by cue-token identity. The causal claims come from activation patching.
-- "Motive" means cue family that changes logits. It does not mean GPT-2 has
-  goals, desires, or an inner life.
 
 ## Reproduce
 
@@ -233,7 +216,7 @@ pip install -r requirements.txt
 jupyter notebook notebooks/control_motives_gpt2_medium.ipynb
 ```
 
-CPU is enough. Most cells run quickly; the patching sweep is the slow part and
+CPU is enough. Most cells run quickly, the patching sweep is the slow part and
 takes roughly 40 minutes on CPU.
 
 To run variants, edit `emotion_cands` for negative, power, or positive emotion
