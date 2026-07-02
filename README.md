@@ -23,6 +23,22 @@ I use words like "motive" and "justification" as shorthand for measurable prompt
 cues and next-token preferences. The project is about representations and
 logits, not about GPT-2 having intentions.
 
+## How To Read The Scores
+
+The project uses three small scores. You do not need the full method to read the
+results:
+
+| Score | What it asks | How to read it |
+|---|---|---|
+| **CIS**, Control Intent Score | At `"... I will ___"`, does GPT-2 prefer control verbs or assist verbs? | Higher CIS means more control-leaning. Lower CIS means more assist-leaning. |
+| **MPS**, Motive Preference Score | At `"... for ___"`, does GPT-2 prefer logic words or emotion words as the reason? | Positive MPS means the reason slot leans logical. Negative MPS means it leans emotional. |
+| **NIE**, Natural Indirect Effect | If I patch activations from a cued prompt into a neutral prompt, how much does CIS move? | Higher NIE means that layer carried more of a causal push toward control. |
+
+The headline plots show **NIE by layer**. So when an emotion curve is above a
+logic curve, emotion-cued activations carried a larger push toward control at
+that layer. When all curves are above zero, patching in any of those cue types
+made the neutral prompt more control-leaning.
+
 ## Headline Results
 
 ### 1. gpt2-small did the surprising thing
